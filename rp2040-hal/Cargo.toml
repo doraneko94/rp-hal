@@ -16,7 +16,8 @@ eh1_0_alpha = { version = "=1.0.0-alpha.6", package="embedded-hal", optional=tru
 embedded-time = "0.12.0"
 itertools = { version = "0.10.1", default-features = false }
 nb = "1.0"
-rp2040-pac = "0.2.0"
+# rp2040-pac = "0.2.0"
+rp2040-pac = { path = "../../rp2040-pac" }
 paste = "1.0"
 pio = { git = "https://github.com/rp-rs/pio-rs.git", branch = "main" }
 usb-device = "0.2.8"
@@ -42,6 +43,8 @@ panic-halt = "0.2.0"
 rp2040-boot2 = "0.2.0"
 hd44780-driver = "0.4.0"
 pio-proc = { git = "https://github.com/rp-rs/pio-rs.git", branch = "main" }
+bbqueue = { version = "0.5", features = ["thumbv6"] }
+rp2040-pac = { path = "../../rp2040-pac", features = ["rt"] }
 
 [features]
 rt = ["rp2040-pac/rt"]

@@ -287,6 +287,43 @@ impl<D: UartDevice> UartPeripheral<Enabled, D> {
         self.transition(Disabled)
     }
 
+    /// Enables the Receive Interrupt.
+    ///
+    /// The relevant UARTx IRQ will fire when there is data in the receive register.
+    pub fn enable_rx_interrupt(&mut self) {
+        // Access the UART FIFO Level Select. We set the RX FIFO trip level
+        // to be half-full.
+
+        // 2 means '1/2 full'.
+        self.device.uartifls.modify(|_r, w| unsafe { w.rxiflsel().bits(2) });
+
+        // Access the UART Interrupt Mask Set/Clear register. Setting a bit
+        // high enables the interrupt.
+
+        // We set the RX interrupt, and the RX Timeout interrupt. This means
+        // we will get an interrupt when the RX FIFO level is triggered, or
+        // when the RX FIFO is non-empty, but 32-bit periods have passed with
+        // no further data. This means we don't have to interrupt on every
+        // single byte, but can make use of the hardware FIFO.
+        self.device.uartimsc.modify(|_r, w| {
+            w.rxim().set_bit();
+            w.rtim().set_bit();
+            w
+        });
+    }
+
+    /// Disables the Receive Interrupt.
+    pub fn disable_rx_interrupt(&mut self) {
+        // Access the UART Interrupt Mask Set/Clear register. Setting a bit
+        // low disables the interrupt.
+
+        self.device.uartimsc.modify(|_r, w| {
+            w.rxim().clear_bit();
+            w.rtim().clear_bit();
+            w
+        });
+    }
+
     pub(crate) fn transmit_flushed(&self) -> nb::Result<(), Infallible> {
         if self.device.uartfr.read().txfe().bit_is_set() {
             Ok(())

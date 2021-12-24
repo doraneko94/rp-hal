@@ -19,6 +19,8 @@ usb-device= "0.2.8"
 usbd-serial = "0.1.1"
 usbd-hid = "0.5.1"
 futures = { version = "0.3", default-features = false, optional = true }
+numtoa = "0.2.4"
+pio = "0.1.0"
 
 [dependencies.embassy]
 git = "https://github.com/embassy-rs/embassy"

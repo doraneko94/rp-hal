@@ -88,6 +88,10 @@ fn main() -> ! {
     channel.output_to(pins.gpio3);
 
     // Infinite loop, rotating the servo left or right
+    // SG90-HV datasheet
+    // Right Max:  300
+    // Stop     :  920
+    // Left  Max: 1540
     loop {
         channel.set_duty(300);
         delay.delay_ms(5000);

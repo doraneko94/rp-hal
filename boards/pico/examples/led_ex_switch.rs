@@ -77,7 +77,7 @@ fn main() -> ! {
     // Set an input from a switch to gpio5
     let switch = pins.gpio5.into_pull_up_input();
 
-    // Blink the LED at 1 Hz
+    // Blink the LED by a switch
     loop {
         delay.delay_ms(5);
         if switch.is_high().ok().unwrap() {

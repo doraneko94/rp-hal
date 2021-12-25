@@ -7,15 +7,9 @@ use cortex_m_rt::entry;
 // GPIO traits
 use embedded_hal::digital::v2::OutputPin;
 
-// Time handling traits
-use embedded_time::rate::*;
-
 // Ensure we halt the program on panic (if we don't mention this crate it won't
 // be linked)
 use panic_halt as _;
-
-// Pull in any important traits
-use pico::hal::prelude::*;
 
 // A shorter alias for the Peripheral Access Crate, which provides low-level
 // register access
@@ -36,29 +30,6 @@ use pico::hal;
 fn main() -> ! {
     // Grab our singleton objects
     let mut pac = pac::Peripherals::take().unwrap();
-    let core = pac::CorePeripherals::take().unwrap();
-
-    // Set up the watchdog driver - needed by the clock setup code
-    let mut watchdog = hal::Watchdog::new(pac.WATCHDOG);
-
-    // Configure the clocks
-    //
-    // The default is to generate a 125 MHz system clock
-    let clocks = hal::clocks::init_clocks_and_plls(
-        pico::XOSC_CRYSTAL_FREQ,
-        pac.XOSC,
-        pac.CLOCKS,
-        pac.PLL_SYS,
-        pac.PLL_USB,
-        &mut pac.RESETS,
-        &mut watchdog,
-    )
-    .ok()
-    .unwrap();
-
-    // The delay object lets us wait for specified amounts of time (in
-    // milliseconds)
-    let mut delay = cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().integer());
 
     // The single-cycle I/O block controls our GPIO pins
     let sio = hal::Sio::new(pac.SIO);
@@ -81,14 +52,10 @@ fn main() -> ! {
     loop {
         led_pin.set_high().unwrap();
         let start = timer.get_counter();
-        while timer.get_counter() - start < 62_500_000 {
-            delay.delay_us(1);
-        }
+        while timer.get_counter() - start < 500_000 {}
         led_pin.set_low().unwrap();
         let start = timer.get_counter();
-        while timer.get_counter() - start < 62_500_000 {
-            delay.delay_us(1);
-        }
+        while timer.get_counter() - start < 500_000 {}
     }
 }
 

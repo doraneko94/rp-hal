@@ -154,7 +154,7 @@ fn main() -> ! {
                 let time = time_high - time_low;
 
                 // Convert the time to the distance (cm)
-                let distance = time as f64 / 1.25 * 0.0343 / 2.0;
+                let distance = time as f64 * 0.0343 / 2.0;
 
                 // Display the integer and decimal parts of the distance separately
                 let int = distance as u16;
